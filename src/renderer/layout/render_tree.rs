@@ -44,6 +44,7 @@ impl RenderStyle {
                 | ElementKind::Ul
                 | ElementKind::Li
                 | ElementKind::H1
+                | ElementKind::H2
                 | ElementKind::P => DisplayType::Block,
                 ElementKind::Script | ElementKind::Head | ElementKind::Style => {
                     DisplayType::DisplayNone
@@ -58,6 +59,7 @@ impl RenderStyle {
         match &node.borrow().kind() {
             NodeKind::Element(element) => match element.kind() {
                 ElementKind::H1 => Some(FontSize::XXLarge),
+                ElementKind::H2 => Some(FontSize::_XLarge),
                 _ => None,
             },
             _ => None,
