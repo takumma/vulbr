@@ -94,7 +94,7 @@ impl RenderStyle {
         if let Some(ref bc) = self.background_color {
             bc.clone()
         } else {
-            Color::from_name("white")
+            Color::from("white")
         }
     }
 
@@ -102,7 +102,7 @@ impl RenderStyle {
         if let Some(ref c) = self.color {
             c.clone()
         } else {
-            Color::from_name("black")
+            Color::from("black")
         }
     }
 
@@ -275,12 +275,12 @@ impl RenderObject {
             match declaration.property.as_str() {
                 "background-color" => {
                     if let ComponentValue::Keyword(value) = declaration.value {
-                        self.style.background_color = Some(Color::from_name(&value));
+                        self.style.background_color = Some(Color::from(&value));
                     }
                 }
                 "color" => {
                     if let ComponentValue::Keyword(value) = declaration.value {
-                        self.style.color = Some(Color::from_name(&value));
+                        self.style.color = Some(Color::from(&value));
                     }
                 }
                 "height" => {

@@ -180,6 +180,7 @@ impl CssParser {
         match token {
             CssToken::Ident(ident) => ComponentValue::Keyword(ident.to_string()),
             CssToken::Number(num) => ComponentValue::Number(num.clone()),
+            CssToken::HashToken(hash_str) => ComponentValue::Keyword(hash_str.to_string()),
             // TODO(work/2-2.html): support color code (e.g. "#ffffff")
             _ => {
                 println!(

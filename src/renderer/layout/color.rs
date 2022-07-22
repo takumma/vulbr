@@ -9,7 +9,15 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn from_name(name: &str) -> Self {
+    pub fn from(str: &str) -> Self {
+        if str.chars().nth(0) == Some('#') {
+            Self::from_code(str)
+        } else {
+            Self::from_name(str)
+        }
+    }
+
+    fn from_name(name: &str) -> Self {
         let code = match name {
             "black" => "#000000".to_string(),
             "silver" => "#c0c0c0".to_string(),
@@ -67,7 +75,7 @@ impl Color {
         }
     }
 
-    pub fn _from_code(code: &str) -> Self {
+    fn from_code(code: &str) -> Self {
         if code.chars().nth(0) != Some('#') || code.len() != 7 {
             // TODO: support color code with 4 chars such as "#fff".
             panic!("invalid color code {}", code);
