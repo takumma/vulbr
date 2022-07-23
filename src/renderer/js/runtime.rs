@@ -275,6 +275,12 @@ impl JsRuntime {
                                             right_value.to_string(),
                                         ))),
                                     )));
+                                    // object.borrow_mut().update_first_child(Some(Rc::new(
+                                    //     RefCell::new(DomNode::new(match right_value{
+                                    //         RuntimeValue::HtmlElement { object, property } => DomNodeKind::Document(),
+                                    //         _ => DomNodeKind::Text(right_value.to_string()),
+                                    //     }))
+                                    // )));
                                 }
                             }
                         }
