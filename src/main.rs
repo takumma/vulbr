@@ -63,11 +63,21 @@ fn handle_input(url: String) -> RenderTree {
             // TODO: work/4-3.py
             // headerをパース -> ヘッダーからlocationを見てそこから遷移
 
-            // if (res.status_code() == 302) {
-            //     match client.get(res.into().)
-            // }else {}
-            println!("status code in HttpResponse: {:?}", res.status_code());
-            res
+            if res.status_code() == 302 {
+                println!("{}", res.headers().get("Location".to_string()));
+                let redirect_url =
+                    ParsedUrl::new(res.headers().get("Location".to_string()).to_string());
+                println!("---------- input url ----------");
+                println!("{:?}", redirect_url);
+                let response = match client.get(&redirect_url) {
+                    Ok(res) => res,
+                    Err(e) => panic!("failed to get redirect http response: {:?}", e),
+                };
+                response
+            } else {
+                println!("status code in HttpResponse: {:?}", res.status_code());
+                res
+            }
         }
         Err(e) => panic!("failed to get http response: {:?}", e),
     };

@@ -19,54 +19,6 @@ impl Header {
 }
 */
 
-#[derive(Debug, Clone)]
-pub struct Header {
-    _name: String,
-    _value: String,
-}
-
-impl Header {
-    pub fn new(name: String, value: String) -> Self {
-        Self {
-            _name: name,
-            _value: value,
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Headers {
-    _values: Vec<Header>,
-}
-
-impl Headers {
-    pub fn new(headers_str: &str) -> Self {
-        // split headers with indention.
-        let headers = headers_str.split("\n").collect::<Vec<&str>>();
-
-        let mut values = Vec::new();
-
-        for h in headers {
-            /*
-            split a header with name & value
-            (ex: "Location: example.com" -> ("Location", "example.com")
-            */
-            let header = h.split(": ").collect::<Vec<&str>>();
-            values.push(Header::new(header[0].to_string(), header[1].to_string()));
-        }
-        Self { _values: values }
-    }
-
-    pub fn _get(&self, name: String) -> String {
-        let index = self
-            ._values
-            .iter()
-            .position(|header| header._name == name)
-            .unwrap();
-        self._values[index]._value.to_string()
-    }
-}
-
 pub struct HttpClient {}
 
 impl HttpClient {
@@ -178,11 +130,60 @@ impl HttpResponse {
         self.status_code
     }
 
-    pub fn _headers(&self) -> Headers {
+    pub fn headers(&self) -> Headers {
         self._headers.clone()
     }
 
     pub fn body(&self) -> String {
         self.body.clone()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Header {
+    _name: String,
+    _value: String,
+}
+
+impl Header {
+    pub fn new(name: String, value: String) -> Self {
+        Self {
+            _name: name,
+            _value: value,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Headers {
+    _values: Vec<Header>,
+}
+
+impl Headers {
+    pub fn new(headers_str: &str) -> Self {
+        // split headers with indention.
+        let preprocessed_response = headers_str.replace("\r", "");
+        let headers = preprocessed_response.split("\n").collect::<Vec<&str>>();
+
+        let mut values = Vec::new();
+
+        for h in headers {
+            /*
+            split a header with name & value
+            (ex: "Location: example.com" -> ("Location", "example.com")
+            */
+            let header = h.split(": ").collect::<Vec<&str>>();
+            values.push(Header::new(header[0].to_string(), header[1].to_string()));
+        }
+        Self { _values: values }
+    }
+
+    pub fn get(&self, name: String) -> String {
+        let index = self
+            ._values
+            .iter()
+            .position(|header| header._name == name)
+            .unwrap();
+        self._values[index]._value.to_string()
     }
 }
