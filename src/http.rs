@@ -19,6 +19,37 @@ impl Header {
 }
 */
 
+#[derive(Debug, Clone)]
+pub struct  Header {
+    name: String,
+    value: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct Headers {
+    _values: Vec<Header>,
+}
+
+impl Headers {
+    pub fn new(headers_str: &str) -> Self {
+        // split headers with indention.
+        let headers = headers_str.split("\n").collect::<Vec<&str>>();
+        
+        for h in headers {
+            // split a header with name & value
+            // (ex: "Location: example.com" -> ("Location", "example.com")
+            let tuple = h.split(": ").collect::<Vec<&str>>();
+            println!("header_key: {}, value is {}", tuple[0], tuple[1]);
+        }
+        Self { _values: Vec::new() }
+    }
+
+    pub fn _get(&self, name: String) -> String {
+        let index = self._values.iter().position(|header| header.name == name).unwrap();
+        self._values[index].value.to_string()
+    }
+}
+
 pub struct HttpClient {}
 
 impl HttpClient {
@@ -94,7 +125,7 @@ pub struct HttpResponse {
     status_code: u32,
     _reason: String,
     // TODO: replace String with Vec<Header>.
-    _headers: String,
+    _headers: Headers,
     body: String,
 }
 
@@ -124,7 +155,7 @@ impl HttpResponse {
                 Err(_) => 404,
             },
             _reason: statuses[2].to_string(),
-            _headers: headers.to_string(),
+            _headers: Headers::new(headers),
             body: body.to_string(),
         }
     }
@@ -132,8 +163,13 @@ impl HttpResponse {
     pub fn status_code(&self) -> u32 {
         self.status_code
     }
+    
+    pub fn _headers(&self) -> Headers {
+        self._headers.clone()
+    }
 
     pub fn body(&self) -> String {
         self.body.clone()
     }
 }
+
