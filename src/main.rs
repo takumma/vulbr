@@ -61,6 +61,11 @@ fn handle_input(url: String) -> RenderTree {
     let response = match client.get(&parsed_url) {
         Ok(res) => {
             // TODO: work/4-3.py
+            // headerをパース -> ヘッダーからlocationを見てそこから遷移
+
+            // if (res.status_code() == 302) {
+            //     match client.get(res.into().)
+            // }else {}
             println!("status code in HttpResponse: {:?}", res.status_code());
             res
         }

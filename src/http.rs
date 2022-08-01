@@ -51,6 +51,8 @@ impl HttpClient {
 
         let mut buf = String::new();
         stream.read_to_string(&mut buf)?;
+        println!("---------------buf string----------------");
+        println!("{}", buf);
 
         Ok(HttpResponse::new(buf))
     }
@@ -111,6 +113,9 @@ impl HttpResponse {
         };
 
         let statuses: Vec<&str> = status_line.split(" ").collect();
+
+        println!("status_line ------- {}", status_line);
+        println!("header ------- {}", headers);
 
         Self {
             _version: statuses[0].to_string(),
