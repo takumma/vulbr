@@ -20,9 +20,18 @@ impl Header {
 */
 
 #[derive(Debug, Clone)]
-pub struct  Header {
-    name: String,
-    value: String,
+pub struct Header {
+    _name: String,
+    _value: String,
+}
+
+impl Header {
+    pub fn new(name: String, value: String) -> Self {
+        Self {
+            _name: name,
+            _value: value,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -34,19 +43,27 @@ impl Headers {
     pub fn new(headers_str: &str) -> Self {
         // split headers with indention.
         let headers = headers_str.split("\n").collect::<Vec<&str>>();
-        
+
+        let mut values = Vec::new();
+
         for h in headers {
-            // split a header with name & value
-            // (ex: "Location: example.com" -> ("Location", "example.com")
-            let tuple = h.split(": ").collect::<Vec<&str>>();
-            println!("header_key: {}, value is {}", tuple[0], tuple[1]);
+            /*
+            split a header with name & value
+            (ex: "Location: example.com" -> ("Location", "example.com")
+            */
+            let header = h.split(": ").collect::<Vec<&str>>();
+            values.push(Header::new(header[0].to_string(), header[1].to_string()));
         }
-        Self { _values: Vec::new() }
+        Self { _values: values }
     }
 
     pub fn _get(&self, name: String) -> String {
-        let index = self._values.iter().position(|header| header.name == name).unwrap();
-        self._values[index].value.to_string()
+        let index = self
+            ._values
+            .iter()
+            .position(|header| header._name == name)
+            .unwrap();
+        self._values[index]._value.to_string()
     }
 }
 
@@ -145,9 +162,6 @@ impl HttpResponse {
 
         let statuses: Vec<&str> = status_line.split(" ").collect();
 
-        println!("status_line ------- {}", status_line);
-        println!("header ------- {}", headers);
-
         Self {
             _version: statuses[0].to_string(),
             status_code: match statuses[1].parse() {
@@ -163,7 +177,7 @@ impl HttpResponse {
     pub fn status_code(&self) -> u32 {
         self.status_code
     }
-    
+
     pub fn _headers(&self) -> Headers {
         self._headers.clone()
     }
@@ -172,4 +186,3 @@ impl HttpResponse {
         self.body.clone()
     }
 }
-
