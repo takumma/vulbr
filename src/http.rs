@@ -169,14 +169,25 @@ impl Header {
     }
 }
 
+//  "immutable", "request", "request-no-cors", "response" or "none".
+#[derive(Debug, Clone)]
+enum HeadersGuard {
+    Immutable,
+    Request,
+    RequestOnCors,
+    Response,
+    None,
+}
+
 #[derive(Debug, Clone)]
 pub struct Headers {
     _values: Vec<Header>,
+    _guard: HeadersGuard,
 }
 
 impl Headers {
     pub fn new() -> Self {
-        Self { _values: Vec::new() }
+        Self { _values: Vec::new(), _guard: HeadersGuard::None }
     }
 
     pub fn get(&self, name: String) -> String {
