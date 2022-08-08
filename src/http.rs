@@ -107,12 +107,27 @@ impl HttpResponse {
             None => panic!("http response doesn't have a new line"),
         };
 
-        let (headers, body) = match remaining.split_once("\n\n") {
+        let (headers_str, body) = match remaining.split_once("\n\n") {
             Some((h, b)) => (h, b),
             None => ("", remaining),
         };
 
         let statuses: Vec<&str> = status_line.split(" ").collect();
+
+        let mut headers = Headers::new();
+
+        // split headers with indention.
+        let preprocessed_response = headers_str.replace("\r", "");
+        let header_string_vec = preprocessed_response.split("\n").collect::<Vec<&str>>();
+
+        for h in header_string_vec {
+            /*
+            split a header with name & value
+            (ex: "Location: example.com" -> ("Location", "example.com")
+            */
+            let header = h.split(": ").collect::<Vec<&str>>();
+            headers.append(header[0].to_string(), header[1].to_string());
+        }
 
         Self {
             _version: statuses[0].to_string(),
@@ -121,7 +136,7 @@ impl HttpResponse {
                 Err(_) => 404,
             },
             _reason: statuses[2].to_string(),
-            _headers: Headers::new(headers),
+            _headers: headers,
             body: body.to_string(),
         }
     }
@@ -160,22 +175,8 @@ pub struct Headers {
 }
 
 impl Headers {
-    pub fn new(headers_str: &str) -> Self {
-        // split headers with indention.
-        let preprocessed_response = headers_str.replace("\r", "");
-        let headers = preprocessed_response.split("\n").collect::<Vec<&str>>();
-
-        let mut values = Vec::new();
-
-        for h in headers {
-            /*
-            split a header with name & value
-            (ex: "Location: example.com" -> ("Location", "example.com")
-            */
-            let header = h.split(": ").collect::<Vec<&str>>();
-            values.push(Header::new(header[0].to_string(), header[1].to_string()));
-        }
-        Self { _values: values }
+    pub fn new() -> Self {
+        Self { _values: Vec::new() }
     }
 
     pub fn get(&self, name: String) -> String {
@@ -185,5 +186,9 @@ impl Headers {
             .position(|header| header._name == name)
             .unwrap();
         self._values[index]._value.to_string()
+    }
+
+    pub fn append(&mut self, name: String, value: String) {
+        self._values.push(Header::new(name, value));
     }
 }
