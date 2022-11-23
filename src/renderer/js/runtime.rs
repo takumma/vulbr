@@ -1,6 +1,8 @@
 use crate::renderer::html::dom::get_element_by_id;
+use crate::renderer::html::dom::HtmlParser;
 use crate::renderer::html::dom::Node as DomNode;
 use crate::renderer::html::dom::NodeKind as DomNodeKind;
+use crate::renderer::html::token::HtmlTokenizer;
 use crate::renderer::js::ast::Node;
 use crate::renderer::js::ast::Program;
 use std::cell::RefCell;
@@ -301,12 +303,23 @@ impl JsRuntime {
                                             right_value.to_string(),
                                         ))),
                                     )));
+
                                     // object.borrow_mut().update_first_child(Some(Rc::new(
                                     //     RefCell::new(DomNode::new(match right_value{
-                                    //         RuntimeValue::HtmlElement { object, property } => DomNodeKind::Document(),
+                                    //         RuntimeValue::HtmlElement { object, property } => {
+                                    //             let element_kind = Element::str_to_element_kind(right_value.to_string());
+                                    //             DomNodeKind::Element(Element::new(element_kind, ))
+                                    //     },
                                     //         _ => DomNodeKind::Text(right_value.to_string()),
                                     //     }))
                                     // )));
+
+                                    // println!("right-value------------------{}", right_value.to_string());
+
+                                    // let html_tokenizer = HtmlTokenizer::new(right_value.to_string());
+                                    // let child_node = HtmlParser::new(html_tokenizer).construct_tree();
+
+                                    // object.borrow_mut().update_first_child(Some(child_node));
                                 }
                             }
                         }
